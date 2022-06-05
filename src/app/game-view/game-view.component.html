@@ -1,0 +1,26 @@
+<section style = "display: flex; justify-content: center;">
+    <section>
+        Новая игра
+        <div style = "border: 1px solid #cccccc; padding: 10px;">
+            <div>Размер поля</div>
+            <input [(ngModel)] = "w" placeholder = "Ширина" type = "number"><br>
+            <input [(ngModel)] = "h" placeholder = "Высота" type = "number"><br>
+            <button (click) = "newGame()">Создать игру</button>
+        </div>
+    </section>
+    <section style = "margin-left: 5px;">
+        Список игр
+        <div style = "border: 1px solid #cccccc; padding: 10px;">
+            <table>
+                <tr *ngFor = "let game of games;">
+                    <td>{{ game.name }}</td>
+                    <td>{{ game.uuid }}</td>
+                    <td>
+                        <button (click) = "connectToGame(game.uuid)">Подключиться</button>
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </section>
+</section>
+<router-outlet></router-outlet>

@@ -1,0 +1,28 @@
+.tic-tac-toe
+{
+    display: flex;
+    text-align: center;
+    margin-top: 10px;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+table
+{
+    table-layout: fixed;
+    border-collapse: collapse;
+}
+.table td {
+    border: 1px solid #b9b9b9;
+}
+.cell
+{
+    width: 22px;
+    height: 22px;
+    border: 1px solid gray;
+    cursor: pointer;
+}
+.cell:hover
+{
+    background-color: rgb(241, 241, 241);
+}

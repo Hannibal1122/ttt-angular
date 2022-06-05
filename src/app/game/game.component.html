@@ -1,0 +1,12 @@
+<div class = "tic-tac-toe">
+    <table>
+        <tbody>
+            <tr *ngFor = "let row of field; let i = index">
+                <td *ngFor = "let cell of row; let j = index" class = "cell" (click) = "clickByField(i, j)">
+                    <i *ngIf = "cell === 1" class="fas fa-times red"></i>
+                    <i *ngIf = "cell === 2" class="far fa-circle blue"></i>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>
