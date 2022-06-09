@@ -2,6 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Component, Input, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subscription } from 'rxjs';
+import { GameService } from './game.service';
 
 @Component({
     selector: 'app-game',
@@ -17,7 +18,7 @@ export class GameComponent implements OnInit
     
     // private routeSubscription: Subscription;
     private querySubscription: Subscription;
-    constructor(private http: HttpClient, private router: Router, private route: ActivatedRoute){
+    constructor(private http: HttpClient, private router: Router, private route: ActivatedRoute, private service: GameService){
          
         // this.routeSubscription = route.params.subscribe(params => this.id=params['id']);
         this.querySubscription = route.queryParams.subscribe(
@@ -25,20 +26,14 @@ export class GameComponent implements OnInit
                 this.loadGameByUUID(queryParam["uuid"])
             }
         );
+        /* console.log(service) */
     }
     ngOnInit(): void {
-        let eventSource = new EventSource("http://localhost:8000/game/sse");
-        eventSource.onmessage = (event) => {
-            const { fieldType, i, j } = JSON.parse(event.data);
+        this.service.addEventListener("click-by-field", ({ fieldType, i, j }) => {
+            console.log("click-by-field", fieldType, i, j)
+            console.log(this.field)
             this.field[i][j] = fieldType;
-            console.log("Новое сообщение", event.data);
-        };
-        eventSource.onerror = function(event) {
-            console.log("Error", event);
-        };
-        eventSource.onopen = function(event) {
-            console.log("Open", event);
-        };
+        });
     }
     loadGameByUUID(uuid: string)
     {
@@ -50,9 +45,13 @@ export class GameComponent implements OnInit
         .subscribe((data: any) => {
             this.field = data.field;
             this.fieldType = data.fieldType;
+
+            this.service.onConnect(() => {
+                this.service.subscribe(uuid);
+            })
         }, () => {
             this.router.navigate(['game']);
-        })
+        });
     }
     clickByField(i: number, j: number)
     {
@@ -64,7 +63,7 @@ export class GameComponent implements OnInit
         .subscribe((data: any) => {
             if(!data.error)
             {
-                console.log(data.state);
+                console.log("State", data.state);
             }
         })
     }
