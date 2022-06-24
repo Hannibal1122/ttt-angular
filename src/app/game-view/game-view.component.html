@@ -2,10 +2,35 @@
     <section>
         Новая игра
         <div style = "border: 1px solid #cccccc; padding: 10px;">
-            <div>Размер поля</div>
-            <input [(ngModel)] = "w" placeholder = "Ширина" type = "number"><br>
-            <input [(ngModel)] = "h" placeholder = "Высота" type = "number"><br>
-            <button (click) = "newGame()">Создать игру</button>
+            <table>
+                <tr>
+                    <td colspan="2">Размер поля</td>
+                </tr>
+                <tr>
+                    <td>Ширина:</td>
+                    <td><input [(ngModel)] = "w" placeholder = "Ширина" type = "number"></td>
+                </tr>
+                <tr>
+                    <td>Высота:</td>
+                    <td><input [(ngModel)] = "h" placeholder = "Высота" type = "number"></td>
+                </tr>
+                <tr>
+                    <td>Кол-во в ряд:</td>
+                    <td><input [(ngModel)] = "condition" placeholder = "Кол-во в ряд" type = "number"></td>
+                </tr>
+                <tr>
+                    <td>Игрок:</td>
+                    <td>
+                        <select [(ngModel)] = "player" placeholder = "Игрок">
+                            <option>Online</option>
+                            <option *ngFor = "let player of ai">{{ player }}</option>
+                        </select>
+                    </td>
+                </tr>
+            </table>
+            <div class = "settings-item">
+                <button (click) = "newGame()">Создать игру</button>
+            </div>
         </div>
     </section>
     <section style = "margin-left: 5px;">
