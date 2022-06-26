@@ -1,4 +1,4 @@
-import { Component, OnInit } from "@angular/core";
+import { Component } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
 import { Subscription } from "rxjs";
 import { GameHttpService } from "../../http/game-http.service";
@@ -9,7 +9,7 @@ import { GameWebSocketService } from "../../http/game-ws.service";
     templateUrl: "./game.component.html",
     styleUrls: ["./game.component.scss"],
 })
-export class GameComponent implements OnInit {
+export class GameComponent {
     login = localStorage.getItem("login") || "";
     uuid: string = "";
     field: number[][] = [];
@@ -30,14 +30,6 @@ export class GameComponent implements OnInit {
             this.loadGameByUUID(queryParam["uuid"]);
         });
     }
-    ngOnInit(): void {
-        this.service.addEventListener("click-by-field", ({ fieldType, i, j, state, queue }) => {
-            this.field[i][j] = fieldType;
-
-            this.checkState(state);
-            this.queue = queue;
-        });
-    }
     async loadGameByUUID(uuid: string) {
         this.uuid = uuid;
         const data = await this.gameHttpService.loadGame(uuid);
@@ -51,7 +43,13 @@ export class GameComponent implements OnInit {
         this.queue = data.queue;
 
         this.service.onConnect(() => {
-            this.service.subscribeToGame(uuid);
+            this.service.subscribeToGame(uuid, ({ fieldType, i, j, state, queue }) => {
+                console.log(this)
+                this.field[i][j] = fieldType;
+
+                this.checkState(state);
+                this.queue = queue;
+            });
         });
 
         this.checkState(data.state);

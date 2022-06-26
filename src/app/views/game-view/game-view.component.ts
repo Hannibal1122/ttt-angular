@@ -29,12 +29,8 @@ export class GameViewComponent implements OnInit {
     ) {}
     ngOnInit(): void {
         this.getList();
-        this.service.addEventListener("new-game", () => {
-            this.getList();
-        });
-        this.service.addEventListener("remove-game", () => {
-            this.getList();
-        });
+        this.service.subscribeToNewGame(() => this.getList());
+        this.service.subscribeToRemoveGame(() => this.getList());
     }
 
     async newGame() {

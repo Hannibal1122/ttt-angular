@@ -63,7 +63,7 @@ export class GameHttpService {
                 uuid,
             }),
             {
-                info: "Игра удалена!",
+                success: "Игра удалена!",
             },
         );
     }

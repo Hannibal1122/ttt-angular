@@ -12,7 +12,7 @@ export class GameWebSocketService {
     private queue = [];
     private isConnect: boolean = false;
     /** В один момент может быть только одна подписка на игру */
-    private subscribeGame;
+    private gameSubscriber;
     constructor() {
         this.init();
     }
@@ -35,22 +35,29 @@ export class GameWebSocketService {
         if (this.isConnect) callback();
         else this.queue.push(callback);
     }
-    addEventListener(name: string, callback: any) {
-        if (!this.listeners[name]) this.listeners[name] = [];
-        this.listeners[name].push(callback);
-    }
-    subscribeToGame(uuid: string) {
+    subscribeToGame(uuid: string, listenerClick) {
         this.unsubscribeOnGame();
-        this.subscribeGame = this.stompClient.subscribe(
+        this.gameSubscriber = this.stompClient.subscribe(
             this.listenPath + "/" + uuid,
             (message: any) => {
                 const body: { name: string; data: any } = JSON.parse(message.body);
                 this.listeners[body.name]?.forEach((onUpdate) => onUpdate(body.data));
             },
         );
+        this.addEventListener("click-by-field", (data) => listenerClick(data), true);
     }
     unsubscribeOnGame() {
-        this.subscribeGame?.unsubscribe();
+        this.gameSubscriber?.unsubscribe();
+    }
+    subscribeToNewGame(callback) {
+        this.addEventListener("new-game", () => callback());
+    }
+    subscribeToRemoveGame(callback) {
+        this.addEventListener("remove-game", () => callback());
+    }
+    private addEventListener(name: string, callback: any, flash = false) {
+        if (!this.listeners[name] || flash) this.listeners[name] = [];
+        this.listeners[name].push(callback);
     }
     send(message: any) {
         this.stompClient.send(this.sendPath, {}, JSON.stringify(message));
