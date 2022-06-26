@@ -5,7 +5,7 @@
 export const environment = {
     production: false,
     javaAPI: "http://localhost:8080",
-    wsAPI: "localhost:8080",
+    wsAPI: "ws://localhost:8080/ws",
 };
 
 /*
