@@ -44,7 +44,6 @@ export class GameComponent {
 
         this.service.onConnect(() => {
             this.service.subscribeToGame(uuid, ({ fieldType, i, j, state, queue }) => {
-                console.log(this)
                 this.field[i][j] = fieldType;
 
                 this.checkState(state);
