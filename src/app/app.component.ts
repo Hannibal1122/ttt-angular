@@ -1,14 +1,17 @@
 import { Component } from "@angular/core";
+import { Router } from "@angular/router";
+import { AuthService } from "./services/auth.service";
 @Component({
     selector: "app-root",
     templateUrl: "./app.component.html",
     styleUrls: ["./app.component.scss"],
 })
 export class AppComponent {
-    login: string = localStorage.getItem("login") || "";
     title = "ttt-angular";
+    constructor(public authService: AuthService, public router: Router) {}
 
-    onChangeLogin() {
-        localStorage.setItem("login", this.login);
+    signOut() {
+        this.authService.signOut();
+        this.router.navigate(["login"]);
     }
 }

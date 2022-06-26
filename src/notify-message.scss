@@ -1,0 +1,63 @@
+.notify-container
+{
+    position: absolute;
+    z-index: 1004;
+    right: 0px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    height: 100%;
+    padding-bottom: 20px;
+    pointer-events: none;
+}
+.notify-message
+{
+    display: flex;
+    width: 380px;
+    background-color: white;
+    border: 1px solid #7d7d7d;
+    border-radius: 10px 0px 0px 10px;
+    border-right: none;
+    overflow: hidden;
+    padding: 15px 20px;
+    padding-right: 40px;
+    transition: 0.3s cubic-bezier(.1, .8, .8, 1);
+    margin-bottom: 5px;
+    cursor: pointer;
+    transform: translateX(100%);
+    opacity: 0.5;
+    pointer-events: all;
+}
+.notify-message.error
+{
+    color: #a94442;
+    background-color: #f2dede;
+    border-color: #ebccd1;
+    box-shadow: 0px 3px 3px #a944427d;
+}
+.notify-message.info
+{
+    color: #31708f;
+    background-color: #d9edf7;
+    border-color: #bce8f1;
+    box-shadow: 0px 3px 3px #31708f7d;
+}
+.notify-message.success
+{
+    color: #3c763d;
+    background-color: #dff0d8;
+    border-color: #d6e9c6;
+    box-shadow: 0px 3px 3px #3c763d7d;
+}
+.notify-message.warning
+{
+    color: #8a6d3b;
+    background-color: #fcf8e3;
+    border-color: #faebcc;
+    box-shadow: 0px 3px 3px #8a6d3b7d;
+}
+.notify-message.open
+{
+    transform: translateX(20px);
+    opacity: 1;
+}

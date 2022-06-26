@@ -21,7 +21,7 @@
                 <tr>
                     <td>Игрок:</td>
                     <td>
-                        <select [(ngModel)] = "player" placeholder = "Игрок">
+                        <select [(ngModel)] = "mode" placeholder = "Игрок">
                             <option>Online</option>
                             <option *ngFor = "let player of ai">{{ player }}</option>
                         </select>

@@ -1,9 +1,10 @@
 import { Injectable } from "@angular/core";
 import { CompatClient, Stomp } from "@stomp/stompjs";
+import { environment } from "../../environments/environment";
 
 @Injectable({ providedIn: "root" })
-export class GameService {
-    private url: string = "ws://localhost:8000/ws";
+export class GameWebSocketService {
+    private url: string = `ws://${environment.wsAPI}/ws`;
     private listenPath: string = "/game/events";
     private sendPath: string = "/game/send/message";
     private stompClient: CompatClient;
