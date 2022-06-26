@@ -3,18 +3,6 @@ export class HttpService {
     headers: Map<string, string> = new Map([]);
     defaultHeaders = { "Content-Type": "application/json; charset=utf-8" };
 
-    public async get<T = any>(action, data?, headers?: Headers): Promise<T> {
-        const response = await fetch(action + (data ? "?" + data : ""), {
-            method: "GET",
-            mode: "cors",
-            cache: "no-cache",
-            credentials: "same-origin",
-            headers: this.mergeHeaders(headers),
-            redirect: "follow",
-            referrerPolicy: "no-referrer",
-        });
-        return await response.json();
-    }
     public async post<T = any>(
         action,
         data?,
@@ -33,6 +21,9 @@ export class HttpService {
         };
         requestInit.body = data instanceof FormData ? data : JSON.stringify(data || {});
         const response = await fetch(this.url + action, requestInit);
+        if (!response.ok) {
+            throw await response.json();
+        }
         return await response.json();
     }
     /* wrapError(observer: Observable<any>) {

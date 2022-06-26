@@ -39,7 +39,10 @@ export class GameComponent implements OnInit {
     async loadGameByUUID(uuid: string) {
         this.uuid = uuid;
         const data = await this.gameHttpService.loadGame(uuid);
-
+        if (!data) {
+            this.router.navigate(["game"]);
+            return;
+        }
         this.field = data.field;
         this.fieldType = data.fieldType;
 
@@ -48,10 +51,6 @@ export class GameComponent implements OnInit {
         });
 
         this.checkState(data.state);
-        /* ,
-        () => {
-            this.router.navigate(["game"]);
-        }, */
     }
     async clickByField(i: number, j: number) {
         const data = await this.gameHttpService.clickByField({

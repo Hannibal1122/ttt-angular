@@ -11,21 +11,21 @@ export class GameHttpService {
      * @return {any}
      */
     async getGameList() {
-        return this.wrapError(this.http.post<any>("/game/get_game_list"));
+        return this.wrapNotify(this.http.post<any>("/game/get_game_list"));
     }
     /**
      * Получить список доступных ботов
      * @return {any}
      */
     async getAIlist() {
-        return this.wrapError(this.http.post<any>(environment.javaAPI + "/game/get_ai_list"));
+        return this.wrapNotify(this.http.post<any>("/game/get_ai_list"));
     }
     /**
      * Создать новую игру
      * @return {any}
      */
     async newGame({ w, h, condition, mode }) {
-        return this.wrapError(
+        return this.wrapNotify(
             this.http.post<any>("/game/new_game", {
                 login: localStorage.getItem("login") || "",
                 width: w,
@@ -33,6 +33,9 @@ export class GameHttpService {
                 condition,
                 mode,
             }),
+            {
+                success: "Игра создана успешно!",
+            },
         );
     }
     /**
@@ -41,7 +44,7 @@ export class GameHttpService {
      * @return {any}
      */
     async loadGame(uuid: string) {
-        return this.wrapError(
+        return this.wrapNotify(
             this.http.post<any>("/game/load_game", {
                 login: localStorage.getItem("login") || "",
                 uuid,
@@ -54,15 +57,18 @@ export class GameHttpService {
      * @return {any}
      */
     async removeGame(uuid: string) {
-        return this.wrapError(
+        return this.wrapNotify(
             this.http.post<any>("/game/remove_game", {
                 login: localStorage.getItem("login") || "",
                 uuid,
             }),
+            {
+                info: "Игра удалена!",
+            },
         );
     }
     async clickByField({ uuid, i, j }) {
-        return this.wrapError(
+        return this.wrapNotify(
             this.http.post<any>("/game/click_by_field", {
                 login: localStorage.getItem("login") || "",
                 uuid,
@@ -72,19 +78,23 @@ export class GameHttpService {
         );
     }
 
-    async wrapError(request: any) {
+    async wrapNotify(request: any, messages?: { success?: string; error?: string; info?: string }) {
         try {
-            return await request;
-        } catch (error) {
-            let message = "";
-            if (error.error instanceof ErrorEvent) {
-                // Get client-side error
-                message = error.error.message;
-            } else {
-                // Get server-side error
-                message = `Error Code: ${error.status}\nMessage: ${error.message}`;
+            const response = await request;
+            if (messages?.success) {
+                NotifyManager.create({ message: messages.success, mode: "success", timeout: 3000 });
             }
-            NotifyManager.create({ message, mode: "error", timeout: 0 });
+            return response;
+        } catch ({ message }) {
+            NotifyManager.create({
+                message: messages?.error || message,
+                mode: "error",
+                timeout: 0,
+            });
+        } finally {
+            if (messages?.info) {
+                NotifyManager.create({ message: messages.info, mode: "info", timeout: 3000 });
+            }
         }
     }
 }
