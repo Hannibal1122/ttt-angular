@@ -15,6 +15,7 @@ export class GameComponent implements OnInit {
     field: number[][] = [];
     fieldType: number = 0;
     gameState: string;
+    queue: string;
 
     // private routeSubscription: Subscription;
     private querySubscription: Subscription;
@@ -30,41 +31,41 @@ export class GameComponent implements OnInit {
         });
     }
     ngOnInit(): void {
-        this.service.addEventListener("click-by-field", ({ fieldType, i, j, state }) => {
+        this.service.addEventListener("click-by-field", ({ fieldType, i, j, state, queue }) => {
             this.field[i][j] = fieldType;
 
             this.checkState(state);
+            this.queue = queue;
         });
     }
     async loadGameByUUID(uuid: string) {
         this.uuid = uuid;
         const data = await this.gameHttpService.loadGame(uuid);
+
         if (!data) {
             this.router.navigate(["game"]);
             return;
         }
         this.field = data.field;
         this.fieldType = data.fieldType;
+        this.queue = data.queue;
 
         this.service.onConnect(() => {
-            this.service.subscribe(uuid);
+            this.service.subscribeToGame(uuid);
         });
 
         this.checkState(data.state);
     }
     async clickByField(i: number, j: number) {
-        const data = await this.gameHttpService.clickByField({
+        await this.gameHttpService.clickByField({
             uuid: this.uuid,
             i,
             j,
         });
-        if (!data.error) {
-            this.checkState(data.state);
-        }
     }
     checkState(state: string) {
         if (state !== "Игра начата") {
             this.gameState = state;
-        }
+        } else this.gameState = "";
     }
 }

@@ -11,6 +11,8 @@ export class GameWebSocketService {
     private listeners = {};
     private queue = [];
     private isConnect: boolean = false;
+    /** В один момент может быть только одна подписка на игру */
+    private subscribeGame;
     constructor() {
         this.init();
     }
@@ -24,7 +26,7 @@ export class GameWebSocketService {
             this.isConnect = true;
             this.stompClient.subscribe(this.listenPath, (message: any) => {
                 const body: { name: string; data: any } = JSON.parse(message.body);
-                this.listeners[body.name]?.forEach((element) => element(body.data));
+                this.listeners[body.name]?.forEach((onUpdate) => onUpdate(body.data));
             });
             this.queue.forEach((callback) => callback());
         });
@@ -37,12 +39,18 @@ export class GameWebSocketService {
         if (!this.listeners[name]) this.listeners[name] = [];
         this.listeners[name].push(callback);
     }
-    subscribe(uuid: string) {
-        this.stompClient.unsubscribe(this.listenPath + "/" + uuid);
-        this.stompClient.subscribe(this.listenPath + "/" + uuid, (message: any) => {
-            const body: { name: string; data: any } = JSON.parse(message.body);
-            this.listeners[body.name]?.forEach((element) => element(body.data));
-        });
+    subscribeToGame(uuid: string) {
+        this.unsubscribeOnGame();
+        this.subscribeGame = this.stompClient.subscribe(
+            this.listenPath + "/" + uuid,
+            (message: any) => {
+                const body: { name: string; data: any } = JSON.parse(message.body);
+                this.listeners[body.name]?.forEach((onUpdate) => onUpdate(body.data));
+            },
+        );
+    }
+    unsubscribeOnGame() {
+        this.subscribeGame?.unsubscribe();
     }
     send(message: any) {
         this.stompClient.send(this.sendPath, {}, JSON.stringify(message));
