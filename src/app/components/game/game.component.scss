@@ -1,13 +1,13 @@
 .tic-tac-toe
 {
-    display: flex;
-    text-align: center;
-    margin-top: 10px;
-    justify-content: center;
-    align-items: center;
-    flex-direction: column;
-    position: relative;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    right: 0;
+    left: 0;
+    margin: auto;
     padding-bottom: 10px;
+    width: max-content;
 }
 table
 {
@@ -19,7 +19,7 @@ table
 }
 .cell
 {
-    width: 22px;
+    min-width: 22px;
     height: 22px;
     border: 1px solid gray;
     cursor: pointer;

@@ -17,11 +17,10 @@ export class GameWebSocketService {
         this.init();
     }
     private init() {
-        let webSocketURL = null;
-        webSocketURL = this.url;
-        const webSocket = new WebSocket(webSocketURL);
-        this.stompClient = Stomp.over(webSocket);
-        this.stompClient.debug = () => {};
+        this.stompClient = Stomp.client(this.url);
+        this.stompClient.reconnect_delay = 5000;
+        /* this.stompClient.debug = () => {}; */
+
         this.stompClient.connect({}, () => {
             this.isConnect = true;
             this.stompClient.subscribe(this.listenPath, (message: any) => {

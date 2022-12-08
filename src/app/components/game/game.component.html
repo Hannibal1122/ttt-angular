@@ -1,18 +1,27 @@
-<div class = "tic-tac-toe">
-    <div>
-        Сейчас ходит {{ queue }}
-    </div>
-    <table>
-        <tbody>
-            <tr *ngFor = "let row of field; let i = index">
-                <td *ngFor = "let cell of row; let j = index" class = "cell" (click) = "clickByField(i, j)">
-                    <i *ngIf = "cell === 1" class="fas fa-times red"></i>
-                    <i *ngIf = "cell === 2" class="far fa-circle blue"></i>
-                </td>
-            </tr>
-        </tbody>
-    </table>
-    <div *ngIf = "gameState" class = "state">
-        {{ gameState }}
+<div style="display: flex;
+    text-align: center;
+    margin-top: 10px;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    position: relative;
+    padding-bottom: 10px;">
+    <div class = "tic-tac-toe">
+        <div>
+            Сейчас ходит {{ queue }}
+        </div>
+        <table>
+            <tbody>
+                <tr *ngFor = "let row of field; let i = index">
+                    <td *ngFor = "let cell of row; let j = index" class = "cell" (click) = "clickByField(i, j)">
+                        <i *ngIf = "cell === 1" class="fas fa-times red"></i>
+                        <i *ngIf = "cell === 2" class="far fa-circle blue"></i>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <div *ngIf = "gameState" class = "state">
+            {{ gameState }}
+        </div>
     </div>
 </div>
