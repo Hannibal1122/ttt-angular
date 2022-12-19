@@ -1,16 +1,22 @@
-<div style = "
-    position: absolute;
-    transform: translate(-50%, -50%);
-    top: 50%;
-    left: 50%;
-    width: 200px;
-    height: 100px;
-    border: 1px dashed gray;
-    padding: 20px;">
-    <div>
-        <input [(ngModel)] = "login" (change) = "onChangeLogin()" placeholder="Login" style = "width:160px;">
+<div
+    style="
+        position: absolute;
+        transform: translate(-50%, -50%);
+        top: 50%;
+        left: 50%;
+        border: 1px dashed gray;
+        padding: 20px;
+    "
+>
+    <div style="margin-top: 5px">
+        <input
+            [(ngModel)]="login"
+            placeholder="Login"
+            style="width: 100%"
+        />
     </div>
-    <div style = "margin-top:5px;">
-        <button>SignIn</button>
+    <app-virtual-keyboard (onChange)="appendToLoginInput($event)"></app-virtual-keyboard>
+    <div style="margin-top: 5px" >
+        <button (click)="onChangeLogin()">SignIn</button>
     </div>
 </div>

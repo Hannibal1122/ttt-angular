@@ -5,6 +5,7 @@ import { GameComponent } from "./components/game/game.component";
 import { LoginViewComponent } from "./views/login-view/login-view.component";
 import { NotFoundComponent } from "./views/not-found/not-found.component";
 import { AuthGuardService as AuthGuard } from "./services/auth-guards.service";
+import { BlockheadViewComponent } from "./views/blockhead-view/blockhead-view.component";
 
 const routes: Routes = [
     {
@@ -12,6 +13,11 @@ const routes: Routes = [
         component: GameViewComponent,
         canActivate: [AuthGuard],
         children: [{ path: "open_game", component: GameComponent }],
+    },
+    {
+        path: "blockhead",
+        component: BlockheadViewComponent,
+        canActivate: [AuthGuard],
     },
     { path: "", redirectTo: "/game", pathMatch: "full" },
     {

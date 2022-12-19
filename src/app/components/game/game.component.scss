@@ -1,5 +1,4 @@
-.tic-tac-toe
-{
+.tic-tac-toe {
     position: absolute;
     top: 0;
     bottom: 0;
@@ -9,27 +8,23 @@
     padding-bottom: 10px;
     width: max-content;
 }
-table
-{
+table {
     table-layout: fixed;
     border-collapse: collapse;
 }
 .table td {
     border: 1px solid #b9b9b9;
 }
-.cell
-{
+.cell {
     min-width: 22px;
     height: 22px;
     border: 1px solid gray;
     cursor: pointer;
 }
-.cell:hover
-{
+.cell:hover {
     background-color: rgb(241, 241, 241);
 }
-.state
-{
+.state {
     position: absolute;
     background-color: rgba(255, 255, 255, 0.6);
     width: 100%;

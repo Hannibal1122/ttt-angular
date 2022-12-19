@@ -8,7 +8,10 @@ import { AuthService } from "../../services/auth.service";
     styleUrls: ["./login-view.component.scss"],
 })
 export class LoginViewComponent {
-    login: string;
+    appendToLoginInput($event: any) {
+        this.login += $event;
+    }
+    login: string = "";
     constructor(private authService: AuthService, public router: Router) {
         if (this.authService.isAuthenticated()) this.router.navigate(["game"]);
     }

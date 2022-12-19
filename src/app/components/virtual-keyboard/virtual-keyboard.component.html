@@ -1,0 +1,13 @@
+<div>
+    <table>
+        <tbody>
+            <tr *ngFor="let row of keyboard; let i = index">
+                <td *ngFor="let cell of row; let j = index">
+                    <button (click)="onClickByKey(keyboard[i][j])">
+                        {{ keyboard[i][j] | uppercase }}
+                    </button>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>

@@ -1,20 +1,20 @@
-nav
-{
+nav {
     display: flex;
     background-color: #9746ca;
     padding: 0px 10px;
-    button
-    {
+    button {
         border-radius: 0px;
         height: 40px;
         border: none;
         color: white;
         cursor: pointer;
         background-color: #9746ca;
-        text-decoration: underline;
     }
-    button:hover
-    {
+    button:hover {
         background-color: #7b33a8;
     }
+}
+
+.active {
+    text-decoration: underline;
 }
