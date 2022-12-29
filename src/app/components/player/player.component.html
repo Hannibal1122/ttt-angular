@@ -1,0 +1,7 @@
+<div style="padding: 5px;">
+    <div>Игрок {{ player.numberPlayer }}</div>
+    <div>Количество очков: {{ player.points }}</div>
+    <div *ngFor="let word of player.list; let i = index">
+        {{ i + 1 }}. {{ word }} - {{ word.length }}
+    </div>
+</div>

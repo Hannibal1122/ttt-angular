@@ -1,5 +1,9 @@
 <div class="container">
-    <div></div>
+    <div>
+        <ng-container *ngFor="let player of players | evenArray">
+            <app-player [player]="player"></app-player>
+        </ng-container>
+    </div>
     <div class="content">
         <div style="display: flex; gap: 5px">
             <div
@@ -39,13 +43,9 @@
         <button *ngIf="trigger.state === 'Done'" (click)="addWordToList()">Готово</button>
         <app-virtual-keyboard (onChange)="onClickByKey($event)"></app-virtual-keyboard>
     </div>
-    <div>
-        <div *ngFor="let player of players">
-            <div>Игрок {{ player.numberPlayer }}</div>
-            <div>Количество очков: {{ player.points }}</div>
-            <div *ngFor="let word of player.list; let i = index">
-                {{ i + 1 }}. {{ word }} - {{ word.length }}
-            </div>
-        </div>
+    <div style="text-align: right;">
+        <ng-container *ngFor="let player of players | evenArray: 'odd'">
+            <app-player [player]="player"></app-player>
+        </ng-container>
     </div>
 </div>

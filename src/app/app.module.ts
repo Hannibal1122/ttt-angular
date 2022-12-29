@@ -8,8 +8,10 @@ import { GameViewComponent } from "./views/game-view/game-view.component";
 import { FormsModule } from "@angular/forms";
 import { NotFoundComponent } from "./views/not-found/not-found.component";
 import { LoginViewComponent } from "./views/login-view/login-view.component";
-import { VirtualKeyboardComponent } from './components/virtual-keyboard/virtual-keyboard.component';
-import { BlockheadViewComponent } from './views/blockhead-view/blockhead-view.component';
+import { VirtualKeyboardComponent } from "./components/virtual-keyboard/virtual-keyboard.component";
+import { BlockheadViewComponent } from "./views/blockhead-view/blockhead-view.component";
+import { EvenArrayPipe } from "./pipes/filter-even-array.pipe";
+import { PlayerComponent } from "./components/player/player.component";
 
 @NgModule({
     declarations: [
@@ -20,6 +22,8 @@ import { BlockheadViewComponent } from './views/blockhead-view/blockhead-view.co
         LoginViewComponent,
         VirtualKeyboardComponent,
         BlockheadViewComponent,
+        EvenArrayPipe,
+        PlayerComponent,
     ],
     imports: [BrowserModule, FormsModule, HttpClientModule, AppRoutingModule],
     providers: [],

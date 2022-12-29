@@ -14,7 +14,7 @@ module.exports = {
                 'plugin:prettier/recommended'
             ],
             rules: {
-                "new-cap": ["error", { "capIsNewExceptions": ["Component", "Injectable", "NgModule"] }],
+                "new-cap": ["error", { "capIsNewExceptions": ["Component", "Injectable", "NgModule", "Pipe", "Input"] }],
                 "require-jsdoc": 0/* ["warn"] */,
                 "@angular-eslint/no-empty-lifecycle-method": "off"
             },

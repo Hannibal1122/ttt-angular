@@ -1,10 +1,15 @@
 import { Component, OnInit } from "@angular/core";
 import { GlossaryService } from "src/app/services/glossary.service";
-/**@TODO сделать алгоритм добавления слова ✔**/
-/**@TODO создать класс игрок, где у каждого будет список **/
-/**@TODO расширить класс триггера, чтобы переключать игроков ✔**/
-/**@TODO связать список игроков и триггер **/
-/**@TODO вывести сумму очков ✔**/
+/** сделать алгоритм добавления слова ✔**/
+/** создать класс игрок, где у каждого будет список ✔**/
+/** расширить класс триггера, чтобы переключать игроков ✔**/
+/** связать список игроков и триггер ✔**/
+/** вывести сумму очков ✔**/
+/** @TODO Исправить баг при изменении буквы в ячейке **/
+/** @TODO Добавить уведомление о неправильности слова **/
+/** @TODO При вводе основного слова так же добавить проверку **/
+/** @TODO Добавить проверку на уже введенные слова, чтобы не повторялись слова в одной игре **/
+/** @TODO Добавить проверку на очередность введенных букв **/
 
 @Component({
     selector: "app-blockhead-view",
@@ -20,7 +25,7 @@ export class BlockheadViewComponent implements OnInit {
     selectedWord: string = "";
     count: number = 1;
 
-    constructor(public glossaryService: GlossaryService) { }
+    constructor(public glossaryService: GlossaryService) {}
 
     ngOnInit(): void {}
 
@@ -61,7 +66,10 @@ export class BlockheadViewComponent implements OnInit {
         }
     }
     async addWordToList() {
-        if (this.selectedWord.length > 1 && await this.glossaryService.testWord(this.selectedWord)) {
+        if (
+            this.selectedWord.length > 1 &&
+            (await this.glossaryService.testWord(this.selectedWord))
+        ) {
             this.toggleStatePlayer(this.selectedWord);
             this.selectedWord = "";
             this.trigger.next();
