@@ -1,19 +1,51 @@
-<div class="content">
-    <div style="display: flex; gap: 5px">
-        <div style="min-width: 120px; padding: 2px; border-bottom: 1px solid #aaa; text-align: center;">{{ word }}</div>
-        <button (click)="clearWord()">Очистить поле</button>
-        <button (click)="onStartGame()">Начать игру</button>
+<div class="container">
+    <div></div>
+    <div class="content">
+        <div style="display: flex; gap: 5px">
+            <div
+                style="
+                    min-width: 120px;
+                    padding: 2px;
+                    border-bottom: 1px solid #aaa;
+                    text-align: center;
+                "
+            >
+                {{ word }}
+            </div>
+            <input
+                type="number"
+                min="1"
+                [(ngModel)]="count"
+                placeholder="Введите количество игроков"
+            />
+            <button (click)="clearWord()">Очистить поле</button>
+            <button (click)="onStartGame()">Начать игру</button>
+        </div>
+
+        <table>
+            <tbody>
+                <tr *ngFor="let row of blockheadTable; let i = index">
+                    <td
+                        *ngFor="let cell of row; let j = index"
+                        [class.selected]="i === selectedCell.i && j === selectedCell.j"
+                    >
+                        <button (click)="onClickByKeyForTable(cell, i, j)">
+                            {{ cell | uppercase }}
+                        </button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <button *ngIf="trigger.state === 'Done'" (click)="addWordToList()">Готово</button>
+        <app-virtual-keyboard (onChange)="onClickByKey($event)"></app-virtual-keyboard>
     </div>
-    <table>
-        <tbody>
-            <tr *ngFor="let row of blockheadTable; let i = index">
-                <td *ngFor="let cell of row; let j = index" [class.selected]="i === selectedCell.i && j === selectedCell.j">
-                    <button (click)="onClickByKeyForTable(cell, i, j)">{{ cell | uppercase }}</button>
-                </td>
-            </tr>
-        </tbody>
-    </table>
-    <button *ngIf="trigger.state === 'Done'" (click)="addWordToList()">Готово</button>
-    <app-virtual-keyboard (onChange)="onClickByKey($event)"></app-virtual-keyboard>
-    <div *ngFor="let word of wordList; let i = index">{{ i + 1 }}. {{ word }} - {{ word.length }}</div>
+    <div>
+        <div *ngFor="let player of players">
+            <div>Игрок {{ player.numberPlayer }}</div>
+            <div>Количество очков: {{ player.points }}</div>
+            <div *ngFor="let word of player.list; let i = index">
+                {{ i + 1 }}. {{ word }} - {{ word.length }}
+            </div>
+        </div>
+    </div>
 </div>

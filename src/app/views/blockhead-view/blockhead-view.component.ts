@@ -1,9 +1,10 @@
 import { Component, OnInit } from "@angular/core";
-/**@TODO сделать алгоритм добавления слова **/
+import { GlossaryService } from "src/app/services/glossary.service";
+/**@TODO сделать алгоритм добавления слова ✔**/
 /**@TODO создать класс игрок, где у каждого будет список **/
-/**@TODO расширить класс триггера, чтобы переключать игроков **/
+/**@TODO расширить класс триггера, чтобы переключать игроков ✔**/
 /**@TODO связать список игроков и триггер **/
-/**@TODO вывести сумму очков **/
+/**@TODO вывести сумму очков ✔**/
 
 @Component({
     selector: "app-blockhead-view",
@@ -14,11 +15,12 @@ export class BlockheadViewComponent implements OnInit {
     blockheadTable: string[][] = [];
     word: string = "";
     trigger = new BlockheadGameTrigger();
+    players: Player[] = [];
     selectedCell = { i: null, j: null };
     selectedWord: string = "";
-    wordList: string[] = [];
+    count: number = 1;
 
-    constructor() {}
+    constructor(public glossaryService: GlossaryService) { }
 
     ngOnInit(): void {}
 
@@ -37,9 +39,11 @@ export class BlockheadViewComponent implements OnInit {
                 this.blockheadTable[i][j] = i == median ? chars[j] : "";
             }
         }
+        this.createPlayer(this.count);
+        this.trigger.state = "Empty";
     }
     onClickByKey(key: string) {
-        if (this.trigger.state === "Letter") {
+        if (this.trigger.state === "Empty" && this.selectedCell.i != null) {
             this.blockheadTable[this.selectedCell.i][this.selectedCell.j] = key;
             this.trigger.next();
         } else this.word += key;
@@ -51,28 +55,52 @@ export class BlockheadViewComponent implements OnInit {
         if (this.trigger.state === "Empty" && !key) {
             this.selectedCell.i = i;
             this.selectedCell.j = j;
-            this.trigger.next();
         }
         if (this.trigger.state === "Done" && key) {
             this.selectedWord += key;
         }
     }
-    addWordToList() {
-        if (this.selectedWord.length > 1) {
-            this.wordList.push(this.selectedWord);
+    async addWordToList() {
+        if (this.selectedWord.length > 1 && await this.glossaryService.testWord(this.selectedWord)) {
+            this.toggleStatePlayer(this.selectedWord);
             this.selectedWord = "";
             this.trigger.next();
         }
     }
+    private createPlayer(n: number) {
+        this.players = [];
+        for (let i = 0; i < n; i++) {
+            this.players[i] = new Player();
+            this.players[i].numberPlayer = i + 1;
+        }
+        if (this.players[0]) this.players[0].statePlayer = "On";
+    }
+    private toggleStatePlayer(str: string) {
+        const player = this.players.find((player) => player.statePlayer == "On");
+        player.statePlayer = "Off";
+        let i = 0;
+        for (; i < this.players.length; i++) {
+            if (this.players[i] === player) break;
+        }
+        if (i === this.players.length - 1) this.players[0].statePlayer = "On";
+        else this.players[i + 1].statePlayer = "On";
+        player.list.push(str);
+        player.points += str.length;
+    }
 }
 class BlockheadGameTrigger {
-    state: "Empty" | "Letter" | "Done" = "Empty";
+    state: "Empty" | "Done" = "Empty";
 
     next() {
-        if (this.state === "Empty") this.state = "Letter";
-        else if (this.state === "Letter") this.state = "Done";
+        if (this.state === "Empty") this.state = "Done";
         else if (this.state === "Done") this.state = "Empty";
     }
+}
+class Player {
+    statePlayer: "Off" | "On" = "Off";
+    numberPlayer: number = 1;
+    points: number = 0; // то же самое, что и wordsLength
+    list: string[] = [];
 
-    
+    nextPlayer() {}
 }
