@@ -24,6 +24,7 @@
             />
             <button (click)="clearWord()">Очистить поле</button>
             <button (click)="onStartGame()">Начать игру</button>
+            <button (click)="clearCell()">Стереть букву</button>
         </div>
 
         <table>
@@ -42,10 +43,23 @@
         </table>
         <button *ngIf="trigger.state === 'Done'" (click)="addWordToList()">Готово</button>
         <app-virtual-keyboard (onChange)="onClickByKey($event)"></app-virtual-keyboard>
+        <div style="display: flex; gap: 5px">
+            <div
+                style="
+                    min-width: 120px;
+                    padding: 2px;
+                    border-bottom: 1px solid #aaa;
+                    text-align: center;
+                "
+            >
+                {{ selectedWord }}
+            </div>
+        </div>
     </div>
-    <div style="text-align: right;">
+    <div style="text-align: right">
         <ng-container *ngFor="let player of players | evenArray: 'odd'">
             <app-player [player]="player"></app-player>
         </ng-container>
     </div>
 </div>
+<app-modal #titleModal></app-modal>

@@ -12,6 +12,7 @@ import { VirtualKeyboardComponent } from "./components/virtual-keyboard/virtual-
 import { BlockheadViewComponent } from "./views/blockhead-view/blockhead-view.component";
 import { EvenArrayPipe } from "./pipes/filter-even-array.pipe";
 import { PlayerComponent } from "./components/player/player.component";
+import { ModalComponent } from './components/modal/modal.component';
 
 @NgModule({
     declarations: [
@@ -24,6 +25,7 @@ import { PlayerComponent } from "./components/player/player.component";
         BlockheadViewComponent,
         EvenArrayPipe,
         PlayerComponent,
+        ModalComponent,
     ],
     imports: [BrowserModule, FormsModule, HttpClientModule, AppRoutingModule],
     providers: [],

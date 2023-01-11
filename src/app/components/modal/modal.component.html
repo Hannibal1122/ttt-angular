@@ -1,0 +1,7 @@
+<div *ngIf="isShow">
+    <div class="backdrop"></div>
+    <div class="modal">
+        <h3>{{ this.title }}</h3>
+        <button class="button" (click)="isShow = false">Закрыть</button>
+    </div>
+</div>
