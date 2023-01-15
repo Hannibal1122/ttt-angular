@@ -12,7 +12,7 @@ import { GlossaryService } from "src/app/services/glossary.service";
 /** Добавить проверку на уже введенные слова, чтобы не повторялись слова в одной игре ✔**/
 /** @TODO Добавить проверку на очередность введенных букв **/
 /** @TODO Добавить обработку ошибок при ответе сервера **/
-/** @TODO Сделать красивый код **/
+/** Сделать красивый код ✔**/
 
 @Component({
     selector: "app-blockhead-view",
@@ -30,6 +30,9 @@ export class BlockheadViewComponent implements OnInit {
     selectedCell = { i: null, j: null };
     selectedWord: string = "";
     count: number = 1;
+    prevCoordinate = { x: null, y: null };
+    arrayCoordinates: Array<object> = [];
+    a: boolean;
 
     constructor(public glossaryService: GlossaryService) {}
 
@@ -58,14 +61,16 @@ export class BlockheadViewComponent implements OnInit {
         }
     }
     onClickByKey(key: string) {
+        const i = this.selectedCell.i;
+        const j = this.selectedCell.j;
         if (
             this.trigger.state === "Empty" &&
             this.selectedCell.i !== null &&
-            this.blockheadTable[this.selectedCell.i][this.selectedCell.j].length === 0 &&
-            (this.blockheadTable[this.selectedCell.i - 1][this.selectedCell.j].length !== 0 ||
-                this.blockheadTable[this.selectedCell.i][this.selectedCell.j - 1].length !== 0 ||
-                this.blockheadTable[this.selectedCell.i + 1][this.selectedCell.j].length !== 0 ||
-                this.blockheadTable[this.selectedCell.i][this.selectedCell.j + 1].length !== 0)
+            this.blockheadTable[i][j].length === 0 &&
+            (this.blockheadTable[i - 1][j].length !== 0 ||
+                this.blockheadTable[i][j - 1].length !== 0 ||
+                this.blockheadTable[i + 1][j].length !== 0 ||
+                this.blockheadTable[i][j + 1].length !== 0)
         ) {
             this.blockheadTable[this.selectedCell.i][this.selectedCell.j] = key;
             this.trigger.next();
@@ -81,11 +86,46 @@ export class BlockheadViewComponent implements OnInit {
             this.selectedCell.j = j;
         }
         if (this.trigger.state === "Done" && key) {
-            // if (сравнить prev и selectedCell) добавить свойство prevCoordinate, в кот будет selectedCell 
-            this.selectedWord += key;
+            this.selectedCell.i = i;
+            this.selectedCell.j = j;
+            // первая буква
+            if (this.selectedWord.length === 0) {
+                this.selectedWord += key;
+                this.prevCoordinate = { x: this.selectedCell.i, y: this.selectedCell.j };
+                this.arrayCoordinates.push(this.prevCoordinate);
+            }
+            // if (
+            //     this.searchKeyInWord(this.arrayCoordinates, this. ]prevCoordinates)
+            // ) {
+            // ограничение на шаг от буквы
+            if (
+                (this.selectedCell.i === this.prevCoordinate.x &&
+                    this.selectedCell.j === this.prevCoordinate.y - 1) ||
+                (this.selectedCell.i === this.prevCoordinate.x &&
+                    this.selectedCell.j === this.prevCoordinate.y + 1) ||
+                (this.selectedCell.j === this.prevCoordinate.y &&
+                    this.selectedCell.i === this.prevCoordinate.x - 1) ||
+                (this.selectedCell.j === this.prevCoordinate.y &&
+                    this.selectedCell.i === this.prevCoordinate.x + 1)
+            ) {
+                this.selectedWord += key;
+                this.prevCoordinate = { x: this.selectedCell.i, y: this.selectedCell.j };
+                this.arrayCoordinates.push(this.prevCoordinate);
+            }
+            console.log(this.arrayCoordinates);
         }
     }
-    async addWordToList() { 
+    //}
+    // метод, чтобы нельзя было ввести одну и ту же букву дважды
+    searchKeyInWord(arrayCoordinates: Array<object>, prevCoordinate: {}): boolean {
+        for (let n = 0; n < arrayCoordinates.length; n++) {
+            if (arrayCoordinates[n] === prevCoordinate) {
+                this.a = false;
+            }
+        }
+        return this.a;
+    }
+    async addWordToList() {
         let toggle = true;
         let error: string = "";
         for (let i = 0; i < this.players.length; i++) {
@@ -96,7 +136,7 @@ export class BlockheadViewComponent implements OnInit {
                 }
             }
         }
-        if (!error) { 
+        if (!error) {
             const isWord = await this.testWord(this.selectedWord);
             if (isWord !== true) error = isWord;
         }
