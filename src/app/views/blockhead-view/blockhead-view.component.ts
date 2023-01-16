@@ -24,7 +24,7 @@ export class BlockheadViewComponent implements OnInit {
     @Output()
     title: string = "";
     blockheadTable: string[][] = [];
-    word: string = "";
+    word: string = "тест";
     trigger = new BlockheadGameTrigger();
     players: Player[] = [];
     selectedCell = { i: null, j: null };
@@ -32,7 +32,8 @@ export class BlockheadViewComponent implements OnInit {
     count: number = 1;
     prevCoordinate = { x: null, y: null };
     arrayCoordinates: Array<object> = [];
-    a: boolean;
+    enterKey = { a: null, b: null };
+    mapCoordinates = new Map();
 
     constructor(public glossaryService: GlossaryService) {}
 
@@ -72,7 +73,9 @@ export class BlockheadViewComponent implements OnInit {
                 this.blockheadTable[i + 1][j].length !== 0 ||
                 this.blockheadTable[i][j + 1].length !== 0)
         ) {
-            this.blockheadTable[this.selectedCell.i][this.selectedCell.j] = key;
+            this.blockheadTable[i][j] = key;
+            this.enterKey.a = this.selectedCell.i;
+            this.enterKey.b = this.selectedCell.j;
             this.trigger.next();
         }
         if (this.blockheadTable.length === 0) this.word += key;
@@ -88,54 +91,40 @@ export class BlockheadViewComponent implements OnInit {
         if (this.trigger.state === "Done" && key) {
             this.selectedCell.i = i;
             this.selectedCell.j = j;
-            // первая буква
-            if (this.selectedWord.length === 0) {
-                this.selectedWord += key;
-                this.prevCoordinate = { x: this.selectedCell.i, y: this.selectedCell.j };
-                this.arrayCoordinates.push(this.prevCoordinate);
-            }
-            // if (
-            //     this.searchKeyInWord(this.arrayCoordinates, this. ]prevCoordinates)
-            // ) {
             // ограничение на шаг от буквы
             if (
-                (this.selectedCell.i === this.prevCoordinate.x &&
-                    this.selectedCell.j === this.prevCoordinate.y - 1) ||
-                (this.selectedCell.i === this.prevCoordinate.x &&
-                    this.selectedCell.j === this.prevCoordinate.y + 1) ||
-                (this.selectedCell.j === this.prevCoordinate.y &&
-                    this.selectedCell.i === this.prevCoordinate.x - 1) ||
-                (this.selectedCell.j === this.prevCoordinate.y &&
-                    this.selectedCell.i === this.prevCoordinate.x + 1)
+                !this.mapCoordinates.has(`${i}_${j}`) &&
+                (this.selectedWord.length === 0 ||
+                    (this.selectedCell.i === this.prevCoordinate.x &&
+                        this.selectedCell.j === this.prevCoordinate.y - 1) ||
+                    (this.selectedCell.i === this.prevCoordinate.x &&
+                        this.selectedCell.j === this.prevCoordinate.y + 1) ||
+                    (this.selectedCell.j === this.prevCoordinate.y &&
+                        this.selectedCell.i === this.prevCoordinate.x - 1) ||
+                    (this.selectedCell.j === this.prevCoordinate.y &&
+                        this.selectedCell.i === this.prevCoordinate.x + 1))
             ) {
                 this.selectedWord += key;
                 this.prevCoordinate = { x: this.selectedCell.i, y: this.selectedCell.j };
-                this.arrayCoordinates.push(this.prevCoordinate);
-            }
-            console.log(this.arrayCoordinates);
-        }
-    }
-    //}
-    // метод, чтобы нельзя было ввести одну и ту же букву дважды
-    searchKeyInWord(arrayCoordinates: Array<object>, prevCoordinate: {}): boolean {
-        for (let n = 0; n < arrayCoordinates.length; n++) {
-            if (arrayCoordinates[n] === prevCoordinate) {
-                this.a = false;
+                this.mapCoordinates.set(`${i}_${j}`, true);
             }
         }
-        return this.a;
     }
     async addWordToList() {
         let toggle = true;
         let error: string = "";
-        for (let i = 0; i < this.players.length; i++) {
-            for (let j = 0; j < this.players[i].list.length; j++) {
-                if (this.selectedWord === this.players[i].list[j]) {
-                    error = "Такое слово уже было";
-                    toggle = false;
+        if (!this.mapCoordinates.has(`${this.enterKey.a}_${this.enterKey.b}`)) {
+            error = "Не использована введённая буква";
+            toggle = false;
+        } else
+            for (let i = 0; i < this.players.length; i++) {
+                for (let j = 0; j < this.players[i].list.length; j++) {
+                    if (this.selectedWord === this.players[i].list[j]) {
+                        error = "Такое слово уже было";
+                        toggle = false;
+                    }
                 }
             }
-        }
         if (!error) {
             const isWord = await this.testWord(this.selectedWord);
             if (isWord !== true) error = isWord;
@@ -150,6 +139,7 @@ export class BlockheadViewComponent implements OnInit {
             this.selectedWord = "";
         }
         if (error) this.titleModal.open(error);
+        this.mapCoordinates.clear();
     }
     async testWord(word: string): Promise<string | true> {
         if (word.length < 2) return "Слово очень короткое";
