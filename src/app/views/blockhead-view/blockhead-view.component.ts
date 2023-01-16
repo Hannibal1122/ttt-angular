@@ -41,7 +41,8 @@ export class BlockheadViewComponent implements OnInit {
 
     async onStartGame() {
         this.blockheadTable = [];
-        if (await this.glossaryService.testWord(this.word)) {
+        const error = await this.glossaryService.testWord(this.word);
+        if (!error) {
             let width = this.word.length;
             let height = this.word.length;
             const chars = this.word.split("");
@@ -58,7 +59,7 @@ export class BlockheadViewComponent implements OnInit {
             this.createPlayer(this.count);
             this.trigger.state = "Empty";
         } else {
-            this.titleModal.open("Такого слова не существует");
+            this.titleModal.open(error);
         }
     }
     onClickByKey(key: string) {
@@ -143,10 +144,11 @@ export class BlockheadViewComponent implements OnInit {
     }
     async testWord(word: string): Promise<string | true> {
         if (word.length < 2) return "Слово очень короткое";
-        if (await this.glossaryService.testWord(word)) {
+        const error = await this.glossaryService.testWord(this.word);
+        if (!error) {
             return true;
         }
-        return "Такого слова не существует";
+        return error;
     }
     private createPlayer(n: number) {
         this.players = [];
